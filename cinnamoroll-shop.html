@@ -1,0 +1,1143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cinnamoroll Shop • Cute Merchandise</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&amp;family=Comic+Neue:wght@400;700&amp;display=swap');
+        
+        :root {
+            --pink: #f472b6;
+        }
+        
+        body {
+            font-family: 'Poppins', system_ui, sans-serif;
+        }
+        
+        .kawaii-font {
+            font-family: 'Comic Neue', 'Poppins', cursive;
+        }
+
+        .product-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .product-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+        }
+
+        .nav-active {
+            color: #f472b6;
+            font-weight: 600;
+        }
+
+        .section-header {
+            font-size: 2.25rem;
+            line-height: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(to right, #f472b6, #c026d3);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .cute-btn {
+            transition: all 0.2s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .cute-btn:hover {
+            transform: scale(1.03);
+        }
+
+        .cute-btn:active {
+            transform: scale(0.98);
+        }
+
+        .modal {
+            animation: modalPop 0.2s ease forwards;
+        }
+
+        @keyframes modalPop {
+            from {
+                opacity: 0;
+                transform: scale(0.95) translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        .cart-slide {
+            animation: slideIn 0.3s ease forwards;
+        }
+
+        .product-img {
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        
+        .product-card:hover .product-img {
+            transform: scale(1.08);
+        }
+
+        .kawaii-bg {
+            background-image: 
+                radial-gradient(circle at 25% 30%, rgba(244, 114, 182, 0.06) 0%, transparent 50%),
+                radial-gradient(circle at 75% 70%, rgba(192, 38, 211, 0.05) 0%, transparent 50%);
+        }
+
+        .star {
+            color: #f59e0b;
+        }
+
+        .line-clamp-2 {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .shop-bg {
+            background: linear-gradient(to bottom, #fffaf5 0%, #ffffff 100%);
+        }
+    </style>
+</head>
+<body class="bg-[#fffaf5] text-gray-800">
+    <!-- NAV -->
+    <nav class="bg-white/95 backdrop-blur-lg border-b border-pink-100 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex items-center justify-between h-20">
+                <!-- Logo -->
+                <div class="flex items-center gap-x-3">
+                    <div class="w-11 h-11 bg-gradient-to-br from-pink-400 to-purple-400 rounded-2xl flex items-center justify-center shadow-inner">
+                        <i class="fas fa-cloud text-white text-3xl"></i>
+                    </div>
+                    <div>
+                        <span class="font-bold text-3xl tracking-tighter kawaii-font">Cinnamoroll</span>
+                        <span class="text-xs font-medium text-pink-500 tracking-[3px] block -mt-1">SHOP</span>
+                    </div>
+                </div>
+
+                <!-- Desktop Menu -->
+                <div class="hidden md:flex items-center gap-x-8 text-sm font-medium">
+                    <a href="#shop" class="hover:text-pink-500 transition-colors">Shop</a>
+                    <a href="#categories" class="hover:text-pink-500 transition-colors">Categories</a>
+                    <a href="#about" class="hover:text-pink-500 transition-colors">Our Story</a>
+                </div>
+
+                <!-- Right side -->
+                <div class="flex items-center gap-x-3">
+                    <!-- Search (mobile hidden) -->
+                    <div class="hidden md:block relative w-72">
+                        <input 
+                            id="nav-search"
+                            type="text" 
+                            placeholder="Search cute items..." 
+                            class="w-full bg-white border border-pink-200 focus:border-pink-400 transition pl-10 pr-4 py-2.5 rounded-3xl text-sm outline-none"
+                            onkeyup="if (event.key === 'Enter') document.getElementById('shop').scrollIntoView({ behavior: 'smooth' }); filterFromNavSearch()">
+                        <i class="fas fa-search absolute left-4 top-3.5 text-pink-300"></i>
+                    </div>
+
+                    <!-- Cart Button -->
+                    <button onclick="showCart()" 
+                            class="relative flex items-center justify-center w-11 h-11 bg-white border border-pink-200 hover:border-pink-300 rounded-2xl transition-all active:scale-95">
+                        <i class="fas fa-shopping-bag text-pink-500 text-xl"></i>
+                        <span id="cart-count" 
+                              class="absolute -top-1 -right-1 bg-pink-500 text-white text-[10px] font-bold min-w-[18px] h-[18px] flex items-center justify-center rounded-full px-1 shadow">0</span>
+                    </button>
+
+                    <!-- Mobile menu -->
+                    <button class="md:hidden w-11 h-11 flex items-center justify-center text-pink-500" onclick="toggleMobileMenu()">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- HERO -->
+    <header class="max-w-7xl mx-auto px-6 pt-12 pb-16">
+        <div class="grid md:grid-cols-2 gap-10 items-center">
+            <div class="space-y-6">
+                <div class="inline-flex items-center gap-x-2 bg-pink-100 text-pink-600 px-4 py-1.5 rounded-3xl text-sm font-semibold">
+                    <i class="fas fa-heart"></i>
+                    <span>Official Sanrio Inspired Collection</span>
+                </div>
+                
+                <h1 class="text-6xl md:text-7xl leading-[1.05] font-extrabold tracking-tighter">
+                    Sweet dreams<br>
+                    <span class="bg-gradient-to-r from-pink-500 via-purple-500 to-pink-500 bg-clip-text text-transparent">start here.</span>
+                </h1>
+                
+                <p class="max-w-md text-xl text-gray-600">
+                    Adorable Cinnamoroll merchandise that makes every day a little more magical.
+                </p>
+
+                <div class="flex items-center gap-x-4 pt-2">
+                    <button onclick="document.getElementById('shop').scrollIntoView({ behavior: 'smooth' })" 
+                            class="cute-btn px-9 py-4 bg-pink-500 hover:bg-pink-600 text-white font-semibold rounded-3xl flex items-center gap-x-3 shadow-lg shadow-pink-200">
+                        <span>Shop Now</span>
+                        <i class="fas fa-arrow-right"></i>
+                    </button>
+                    
+                    <button onclick="showAbout()" 
+                            class="px-7 py-4 border border-pink-200 hover:bg-pink-50 font-medium rounded-3xl transition flex items-center gap-x-2">
+                        <span>Our Story</span>
+                    </button>
+                </div>
+
+                <div class="flex items-center gap-x-8 pt-4">
+                    <div class="flex -space-x-2">
+                        <div class="w-7 h-7 bg-pink-300 rounded-full border-2 border-white"></div>
+                        <div class="w-7 h-7 bg-purple-300 rounded-full border-2 border-white"></div>
+                        <div class="w-7 h-7 bg-amber-300 rounded-full border-2 border-white"></div>
+                    </div>
+                    <div class="text-sm">
+                        <span class="font-semibold">12,489</span> 
+                        <span class="text-gray-500">happy cloud chasers</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Hero Visual -->
+            <div class="relative flex justify-center">
+                <div class="w-full max-w-[380px] aspect-square bg-gradient-to-br from-pink-100 via-purple-100 to-white rounded-[4rem] p-3 shadow-2xl shadow-pink-100 relative overflow-hidden">
+                    <!-- Cute SVG Cinnamoroll-like character -->
+                    <svg viewBox="0 0 400 400" class="w-full h-full drop-shadow-xl" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Body -->
+                        <ellipse cx="200" cy="260" rx="95" ry="75" fill="#ffffff"/>
+                        <!-- Head -->
+                        <circle cx="200" cy="175" r="88" fill="#ffffff"/>
+                        <!-- Ears -->
+                        <ellipse cx="130" cy="115" rx="28" ry="55" fill="#ffffff" transform="rotate(-25 130 115)"/>
+                        <ellipse cx="270" cy="115" rx="28" ry="55" fill="#ffffff" transform="rotate(25 270 115)"/>
+                        <!-- Inner ears -->
+                        <ellipse cx="135" cy="120" rx="14" ry="32" fill="#fce7f3" transform="rotate(-25 135 120)"/>
+                        <ellipse cx="265" cy="120" rx="14" ry="32" fill="#fce7f3" transform="rotate(25 265 120)"/>
+                        <!-- Face blush -->
+                        <ellipse cx="155" cy="185" rx="22" ry="12" fill="#fda4af" opacity="0.5"/>
+                        <ellipse cx="245" cy="185" rx="22" ry="12" fill="#fda4af" opacity="0.5"/>
+                        <!-- Eyes -->
+                        <ellipse cx="165" cy="165" rx="13" ry="18" fill="#1e2937"/>
+                        <ellipse cx="235" cy="165" rx="13" ry="18" fill="#1e2937"/>
+                        <!-- Eye shine -->
+                        <circle cx="170" cy="158" r="4" fill="#ffffff"/>
+                        <circle cx="240" cy="158" r="4" fill="#ffffff"/>
+                        <!-- Nose -->
+                        <ellipse cx="200" cy="192" rx="8" ry="5" fill="#64748b"/>
+                        <!-- Mouth -->
+                        <path d="M185 205 Q200 215 215 205" fill="none" stroke="#64748b" stroke-width="3" stroke-linecap="round"/>
+                        <!-- Tail / cloud detail -->
+                        <ellipse cx="290" cy="255" rx="35" ry="22" fill="#ffffff"/>
+                        <ellipse cx="305" cy="248" rx="18" ry="12" fill="#ffffff"/>
+                    </svg>
+                    
+                    <div class="absolute bottom-6 right-6 bg-white/90 backdrop-blur px-4 py-1.5 rounded-2xl shadow text-sm font-medium flex items-center gap-x-2">
+                        <div class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div>
+                        <span class="text-emerald-600 text-xs font-semibold">NEW ARRIVALS</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- TRUST BAR -->
+    <div class="border-y border-pink-100 bg-white">
+        <div class="max-w-7xl mx-auto px-6 py-5">
+            <div class="flex flex-wrap justify-center md:justify-between items-center gap-x-8 gap-y-3 text-sm">
+                <div class="flex items-center gap-x-2 text-gray-600">
+                    <i class="fas fa-truck text-pink-400"></i>
+                    <span class="font-medium">Free shipping on orders over $50</span>
+                </div>
+                <div class="flex items-center gap-x-2 text-gray-600">
+                    <i class="fas fa-undo text-pink-400"></i>
+                    <span class="font-medium">30-day easy returns</span>
+                </div>
+                <div class="flex items-center gap-x-2 text-gray-600">
+                    <i class="fas fa-shield-halved text-pink-400"></i>
+                    <span class="font-medium">Secure checkout</span>
+                </div>
+                <div class="hidden md:flex items-center gap-x-2 text-gray-600">
+                    <i class="fas fa-globe text-pink-400"></i>
+                    <span class="font-medium">Ships worldwide</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SHOP SECTION -->
+    <section id="shop" class="max-w-7xl mx-auto px-6 pt-14 pb-20">
+        <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-y-4 mb-8">
+            <div>
+                <span class="text-pink-500 font-semibold tracking-widest text-sm">DISCOVER THE MAGIC</span>
+                <h2 class="section-header">Our Collection</h2>
+            </div>
+            
+            <!-- Filters -->
+            <div class="flex flex-col sm:flex-row gap-3">
+                <!-- Search -->
+                <div class="relative">
+                    <input id="search-input" 
+                           type="text" 
+                           placeholder="Search products..." 
+                           onkeyup="renderProducts()"
+                           class="w-full sm:w-64 border border-pink-200 focus:border-pink-400 pl-10 py-2.5 rounded-3xl text-sm outline-none transition">
+                    <i class="fas fa-search absolute left-4 top-3 text-pink-300"></i>
+                </div>
+                
+                <!-- Category -->
+                <select id="category-filter" onchange="renderProducts()" 
+                        class="border border-pink-200 focus:border-pink-400 px-5 py-2.5 rounded-3xl text-sm outline-none bg-white">
+                    <option value="all">All Categories</option>
+                    <option value="Plush">Plushies</option>
+                    <option value="Apparel">Apparel</option>
+                    <option value="Accessories">Accessories</option>
+                    <option value="Stationery">Stationery</option>
+                    <option value="Drinkware">Drinkware</option>
+                </select>
+                
+                <!-- Sort -->
+                <select id="sort-select" onchange="renderProducts()" 
+                        class="border border-pink-200 focus:border-pink-400 px-5 py-2.5 rounded-3xl text-sm outline-none bg-white">
+                    <option value="popular">Sort: Popular</option>
+                    <option value="price-low">Price: Low to High</option>
+                    <option value="price-high">Price: High to Low</option>
+                    <option value="rating">Highest Rated</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Product Grid -->
+        <div id="product-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            <!-- Populated by JS -->
+        </div>
+        
+        <div class="text-center mt-10">
+            <p class="text-sm text-gray-500">Showing our most loved cloud-inspired pieces • More dropping soon!</p>
+        </div>
+    </section>
+
+    <!-- CATEGORIES HIGHLIGHT -->
+    <section id="categories" class="bg-white border-y border-pink-100 py-14">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-10">
+                <span class="text-pink-500 text-sm font-semibold tracking-[2px]">BROWSE BY VIBE</span>
+                <h3 class="text-3xl font-bold mt-1">Find your perfect match</h3>
+            </div>
+            
+            <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
+                <div onclick="filterByCategoryQuick('Plush')" class="group cursor-pointer bg-[#fff1f7] hover:bg-pink-100 transition rounded-3xl p-6 flex flex-col items-center text-center">
+                    <div class="w-14 h-14 flex items-center justify-center text-4xl mb-3">🧸</div>
+                    <div class="font-semibold">Plushies</div>
+                    <div class="text-xs text-pink-500 mt-0.5">6 items</div>
+                </div>
+                <div onclick="filterByCategoryQuick('Apparel')" class="group cursor-pointer bg-[#f0f4ff] hover:bg-blue-100 transition rounded-3xl p-6 flex flex-col items-center text-center">
+                    <div class="w-14 h-14 flex items-center justify-center text-4xl mb-3">👕</div>
+                    <div class="font-semibold">Apparel</div>
+                    <div class="text-xs text-blue-500 mt-0.5">8 items</div>
+                </div>
+                <div onclick="filterByCategoryQuick('Accessories')" class="group cursor-pointer bg-[#f0fdf4] hover:bg-emerald-100 transition rounded-3xl p-6 flex flex-col items-center text-center">
+                    <div class="w-14 h-14 flex items-center justify-center text-4xl mb-3">🎒</div>
+                    <div class="font-semibold">Accessories</div>
+                    <div class="text-xs text-emerald-500 mt-0.5">12 items</div>
+                </div>
+                <div onclick="filterByCategoryQuick('Stationery')" class="group cursor-pointer bg-[#fefce8] hover:bg-yellow-100 transition rounded-3xl p-6 flex flex-col items-center text-center">
+                    <div class="w-14 h-14 flex items-center justify-center text-4xl mb-3">📓</div>
+                    <div class="font-semibold">Stationery</div>
+                    <div class="text-xs text-yellow-600 mt-0.5">5 items</div>
+                </div>
+                <div onclick="filterByCategoryQuick('Drinkware')" class="group cursor-pointer bg-[#fdf2f8] hover:bg-rose-100 transition rounded-3xl p-6 flex flex-col items-center text-center">
+                    <div class="w-14 h-14 flex items-center justify-center text-4xl mb-3">☕</div>
+                    <div class="font-semibold">Drinkware</div>
+                    <div class="text-xs text-rose-500 mt-0.5">4 items</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ABOUT / STORY -->
+    <section id="about" class="max-w-5xl mx-auto px-6 py-20 text-center">
+        <div class="max-w-2xl mx-auto">
+            <span class="text-pink-500 font-semibold">OUR STORY</span>
+            <h2 class="text-4xl font-bold tracking-tight mt-2 mb-6">Made for cloud chasers, by cloud chasers.</h2>
+            <p class="text-gray-600 text-[15px] leading-relaxed">
+                Cinnamoroll has been bringing smiles since 2002. Our little shop curates the softest, cutest official-inspired 
+                merchandise so you can carry a piece of that pure happiness with you every day — whether you're studying, 
+                working, or just floating through life.
+            </p>
+            
+            <div class="mt-8 flex justify-center gap-x-8 text-sm">
+                <div>
+                    <div class="font-bold text-2xl text-pink-500">98k+</div>
+                    <div class="text-gray-500 text-xs tracking-wider">ITEMS SOLD</div>
+                </div>
+                <div>
+                    <div class="font-bold text-2xl text-pink-500">4.98</div>
+                    <div class="text-gray-500 text-xs tracking-wider">AVERAGE RATING</div>
+                </div>
+                <div>
+                    <div class="font-bold text-2xl text-pink-500">42</div>
+                    <div class="text-gray-500 text-xs tracking-wider">COUNTRIES</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FINAL CTA -->
+    <div class="bg-gradient-to-r from-pink-500 to-purple-500 py-14">
+        <div class="max-w-xl mx-auto text-center px-6">
+            <h3 class="text-white text-3xl font-bold tracking-tight">Ready to bring the clouds home?</h3>
+            <p class="text-pink-100 mt-2">Join thousands of happy customers who made their days a little sweeter.</p>
+            <button onclick="document.getElementById('shop').scrollIntoView({ behavior: 'smooth' })" 
+                    class="mt-6 px-10 py-3.5 bg-white text-pink-600 hover:bg-pink-50 font-semibold rounded-3xl transition inline-flex items-center gap-x-2">
+                Start Shopping <i class="fas fa-arrow-right ml-1"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="bg-white border-t border-pink-100 py-10">
+        <div class="max-w-7xl mx-auto px-6 text-center md:text-left">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-y-4 text-sm">
+                <div class="text-gray-500">
+                    © 2026 Cinnamoroll Shop • Demo Project
+                </div>
+                <div class="flex gap-x-5 text-gray-400 text-xs">
+                    <span>Privacy</span>
+                    <span>Terms</span>
+                    <span>Shipping</span>
+                </div>
+                <div class="text-xs text-pink-400 flex items-center gap-x-1.5">
+                    <i class="fas fa-magic"></i> 
+                    <span>Built with <span class="font-semibold text-pink-500">Grok</span> • xAI</span>
+                </div>
+            </div>
+            
+            <div class="mt-6 pt-6 border-t border-pink-100 text-[10px] text-center text-gray-400 max-w-md mx-auto">
+                This is a <strong>fictional demo website</strong> created for educational and illustrative purposes only. 
+                Cinnamoroll and all related characters are trademarks of <strong>Sanrio Co., Ltd.</strong> 
+                This project is not affiliated with, endorsed by, or connected to Sanrio in any way.
+            </div>
+        </div>
+    </footer>
+
+    <!-- PRODUCT QUICK VIEW MODAL -->
+    <div id="product-modal" onclick="if (event.target.id === 'product-modal') hideProductModal()" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
+        <div onclick="event.stopImmediatePropagation()" class="bg-white w-full max-w-lg rounded-3xl overflow-hidden shadow-2xl modal">
+            <div class="relative">
+                <img id="modal-image" class="w-full h-72 object-cover" alt="">
+                <button onclick="hideProductModal()" class="absolute top-4 right-4 w-9 h-9 bg-white/90 hover:bg-white rounded-full flex items-center justify-center shadow">
+                    <i class="fas fa-times text-gray-600"></i>
+                </button>
+            </div>
+            
+            <div class="p-7">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <span id="modal-category" class="text-xs font-semibold px-3 py-1 bg-pink-100 text-pink-600 rounded-2xl"></span>
+                        <h3 id="modal-name" class="font-bold text-2xl mt-2 tracking-tight"></h3>
+                    </div>
+                    <div class="text-right">
+                        <div id="modal-price" class="font-extrabold text-3xl text-pink-600"></div>
+                    </div>
+                </div>
+                
+                <div class="flex items-center gap-x-2 mt-1">
+                    <div id="modal-stars" class="flex text-amber-400"></div>
+                    <span id="modal-rating" class="text-sm text-gray-500"></span>
+                </div>
+                
+                <p id="modal-description" class="mt-4 text-gray-600 leading-relaxed"></p>
+                
+                <div class="mt-6 grid grid-cols-2 gap-3 text-sm">
+                    <div class="bg-pink-50 rounded-2xl p-3">
+                        <div class="text-pink-500 text-xs">MATERIAL</div>
+                        <div id="modal-material" class="font-medium"></div>
+                    </div>
+                    <div class="bg-pink-50 rounded-2xl p-3">
+                        <div class="text-pink-500 text-xs">IN STOCK</div>
+                        <div id="modal-stock" class="font-medium text-emerald-600"></div>
+                    </div>
+                </div>
+                
+                <div class="mt-6 flex gap-3">
+                    <button onclick="addCurrentProductToCart()" 
+                            class="flex-1 cute-btn bg-pink-500 hover:bg-pink-600 text-white py-[14px] rounded-3xl font-semibold flex items-center justify-center gap-x-2">
+                        <i class="fas fa-cart-plus mr-1"></i> 
+                        ADD TO CART
+                    </button>
+                    <button onclick="hideProductModal()" 
+                            class="px-7 border border-pink-200 hover:bg-pink-50 rounded-3xl font-medium">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CART SLIDE OVER -->
+    <div id="cart-panel" onclick="if (event.target.id === 'cart-panel') hideCart()" class="hidden fixed inset-0 bg-black/40 z-[110]">
+        <div onclick="event.stopImmediatePropagation()" class="cart-slide absolute right-0 top-0 h-full w-full max-w-md bg-white shadow-2xl flex flex-col">
+            <!-- Cart Header -->
+            <div class="px-6 pt-6 pb-4 border-b flex items-center justify-between">
+                <div class="flex items-center gap-x-3">
+                    <i class="fas fa-shopping-bag text-pink-500 text-2xl"></i>
+                    <div>
+                        <span class="font-bold text-xl">Your Cart</span>
+                        <span id="cart-items-count" class="text-sm text-gray-500 ml-1.5">(0)</span>
+                    </div>
+                </div>
+                <button onclick="hideCart()" class="text-2xl leading-none text-gray-400 hover:text-gray-600">×</button>
+            </div>
+            
+            <!-- Cart Items -->
+            <div id="cart-items" class="flex-1 overflow-auto p-6 space-y-5 text-sm">
+                <!-- Populated by JS -->
+            </div>
+            
+            <!-- Cart Footer -->
+            <div class="border-t p-6 bg-white">
+                <div class="flex justify-between items-baseline mb-4 px-1">
+                    <span class="font-medium text-gray-600">Subtotal</span>
+                    <span id="cart-total" class="font-extrabold text-3xl text-pink-600">$0</span>
+                </div>
+                
+                <button onclick="proceedToCheckout()" 
+                        class="w-full py-4 bg-gradient-to-r from-pink-500 to-purple-500 text-white font-semibold rounded-3xl flex items-center justify-center gap-x-2 hover:brightness-105 transition">
+                    <span>CHECKOUT SECURELY</span>
+                </button>
+                
+                <p class="text-center text-[10px] text-gray-400 mt-3">Taxes and shipping calculated at checkout • Demo mode</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- CHECKOUT MODAL -->
+    <div id="checkout-modal" onclick="if (event.target.id === 'checkout-modal') hideCheckoutModal()" class="hidden fixed inset-0 bg-black/70 backdrop-blur z-[120] flex items-center justify-center p-4">
+        <div onclick="event.stopImmediatePropagation()" class="bg-white rounded-3xl w-full max-w-md overflow-hidden modal">
+            <div class="px-7 pt-7 pb-5">
+                <div class="flex justify-between items-center mb-5">
+                    <span class="font-bold text-xl">Checkout</span>
+                    <button onclick="hideCheckoutModal()" class="text-gray-400 hover:text-gray-600 text-2xl">×</button>
+                </div>
+                
+                <form id="checkout-form" onsubmit="completeOrder(event)">
+                    <div class="space-y-4">
+                        <!-- Contact -->
+                        <div>
+                            <label class="text-xs font-semibold text-gray-500 block mb-1.5">CONTACT INFORMATION</label>
+                            <input type="text" placeholder="Full name" value="Henry Wong" class="w-full border border-pink-200 rounded-2xl px-4 py-3 text-sm" required>
+                            <input type="email" placeholder="Email address" value="henry@example.com" class="w-full border border-pink-200 rounded-2xl px-4 py-3 text-sm mt-2" required>
+                        </div>
+                        
+                        <div>
+                            <label class="text-xs font-semibold text-gray-500 block mb-1.5">SHIPPING ADDRESS</label>
+                            <input type="text" placeholder="Street address" value="123 Cloud Street, Flat 8B" class="w-full border border-pink-200 rounded-2xl px-4 py-3 text-sm" required>
+                            <div class="grid grid-cols-2 gap-3 mt-2">
+                                <input type="text" placeholder="City" value="Hong Kong" class="border border-pink-200 rounded-2xl px-4 py-3 text-sm" required>
+                                <input type="text" placeholder="Postal code" value="000000" class="border border-pink-200 rounded-2xl px-4 py-3 text-sm" required>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <label class="text-xs font-semibold text-gray-500 block mb-1.5">PAYMENT (DEMO)</label>
+                            <div class="border border-pink-200 rounded-2xl p-4">
+                                <div class="flex gap-2 mb-3">
+                                    <div class="flex-1">
+                                        <input type="text" value="4242 4242 4242 4242" class="w-full text-sm border-0 focus:ring-0 px-0 py-1 font-mono" readonly>
+                                    </div>
+                                </div>
+                                <div class="grid grid-cols-2 gap-3">
+                                    <input type="text" value="02 / 28" class="border border-pink-200 rounded-xl px-3 py-2 text-sm" readonly>
+                                    <input type="text" value="123" class="border border-pink-200 rounded-xl px-3 py-2 text-sm" readonly>
+                                </div>
+                            </div>
+                            <p class="text-[10px] text-center text-emerald-500 mt-1.5">✓ This is a demo. No payment will be processed.</p>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" 
+                            class="mt-6 w-full py-[15px] bg-pink-600 hover:bg-pink-700 transition text-white font-semibold rounded-3xl flex justify-center items-center gap-x-2">
+                        PLACE ORDER • <span id="checkout-total">$0</span>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- SUCCESS TOAST / MODAL -->
+    <div id="success-modal" onclick="hideSuccessModal()" class="hidden fixed inset-0 bg-black/60 z-[130] flex items-center justify-center p-4">
+        <div onclick="event.stopImmediatePropagation()" class="bg-white rounded-3xl max-w-sm w-full p-8 text-center modal">
+            <div class="mx-auto w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mb-5">
+                <i class="fas fa-check text-emerald-500 text-4xl"></i>
+            </div>
+            <h3 class="font-bold text-2xl">Thank you!</h3>
+            <p class="text-gray-600 mt-1">Your order has been placed successfully.</p>
+            
+            <div class="my-6 bg-emerald-50 border border-emerald-100 rounded-2xl py-3 px-5 text-left text-sm">
+                <div class="flex justify-between"><span class="text-gray-500">Order #</span> <span class="font-mono font-semibold">CINNA-784291</span></div>
+                <div class="flex justify-between mt-1"><span class="text-gray-500">Estimated delivery</span> <span class="font-medium">Feb 3–7</span></div>
+            </div>
+            
+            <button onclick="hideSuccessModal()" 
+                    class="w-full py-3 bg-emerald-500 hover:bg-emerald-600 text-white font-semibold rounded-3xl">Back to Shop</button>
+            
+            <p class="text-xs text-gray-400 mt-4">A confirmation email has been sent (demo).</p>
+        </div>
+    </div>
+
+    <script>
+        // Tailwind script configuration
+        function initializeTailwind() {
+            document.documentElement.style.setProperty('--accent-pink', '#f472b6');
+        }
+        
+        // Products Data
+        let products = [
+            {
+                id: 1,
+                name: "Classic Cinnamoroll Plush",
+                price: 32.99,
+                category: "Plush",
+                description: "The original fluffy friend. Super soft 25cm plush with signature long ears and blushing cheeks. Perfect for cuddles or desk decor.",
+                image: "https://placehold.co/600x600/ffe4f0/f472b6?text=Plushie",
+                rating: 4.9,
+                stock: 124,
+                material: "Premium polyester + cotton fill"
+            },
+            {
+                id: 2,
+                name: "Cloud Nine Oversized Hoodie",
+                price: 49.99,
+                category: "Apparel",
+                description: "Ultra cozy fleece hoodie featuring embroidered Cinnamoroll on the chest and subtle cloud patterns on the sleeves. Unisex fit.",
+                image: "https://placehold.co/600x600/e0f0ff/64748b?text=Hoodie",
+                rating: 4.8,
+                stock: 87,
+                material: "80% cotton, 20% polyester fleece"
+            },
+            {
+                id: 3,
+                name: "Sweet Dreams T-Shirt",
+                price: 24.99,
+                category: "Apparel",
+                description: "Soft cotton tee with adorable front print of Cinnamoroll floating on a cloud. Perfect everyday wear for fans.",
+                image: "https://placehold.co/600x600/fff1f7/f472b6?text=T-Shirt",
+                rating: 4.7,
+                stock: 203,
+                material: "100% organic cotton"
+            },
+            {
+                id: 4,
+                name: "Floppy Ear Tote Bag",
+                price: 22.99,
+                category: "Accessories",
+                description: "Large canvas tote with cute ear-shaped handles and all-over Cinnamoroll print. Great for books, groceries, or beach days.",
+                image: "https://placehold.co/600x600/f0fdf4/166534?text=Tote+Bag",
+                rating: 4.6,
+                stock: 156,
+                material: "Heavyweight canvas + inner pocket"
+            },
+            {
+                id: 5,
+                name: "Cinnamon Roll Ceramic Mug",
+                price: 16.99,
+                category: "Drinkware",
+                description: "Adorable 350ml mug shaped like a cinnamon roll with Cinnamoroll peeking out. Microwave & dishwasher safe.",
+                image: "https://placehold.co/600x600/fff7ed/f59e0b?text=Mug",
+                rating: 4.9,
+                stock: 91,
+                material: "High-quality ceramic"
+            },
+            {
+                id: 6,
+                name: "Kawaii Sticker Pack (30pcs)",
+                price: 8.99,
+                category: "Stationery",
+                description: "Waterproof vinyl sticker set featuring 30 unique Cinnamoroll designs. Perfect for laptops, water bottles, journals & more.",
+                image: "https://placehold.co/600x600/fefce8/ca8a04?text=Stickers",
+                rating: 4.8,
+                stock: 312,
+                material: "Premium vinyl, waterproof"
+            },
+            {
+                id: 7,
+                name: "Mini Cloud Backpack",
+                price: 35.99,
+                category: "Accessories",
+                description: "Adorable mini backpack with 3D ear details and fluffy tail charm. Fits tablets, books and daily essentials.",
+                image: "https://placehold.co/600x600/f0f9ff/0369a1?text=Backpack",
+                rating: 4.5,
+                stock: 64,
+                material: "Durable nylon + plush accents"
+            },
+            {
+                id: 8,
+                name: "Acrylic Keychain Set",
+                price: 11.99,
+                category: "Accessories",
+                description: "Set of 3 double-sided acrylic keychains featuring different Cinnamoroll poses. Includes one with moving ear detail!",
+                image: "https://placehold.co/600x600/fdf2f8/be185d?text=Keychain",
+                rating: 4.7,
+                stock: 178,
+                material: "Clear acrylic + metal hardware"
+            },
+            {
+                id: 9,
+                name: "Tail Phone Case (iPhone)",
+                price: 19.99,
+                category: "Accessories",
+                description: "Protective soft case with 3D raised tail and ears. Compatible with wireless charging. Choose your model at checkout.",
+                image: "https://placehold.co/600x600/f3e8ff/7e22ce?text=Phone+Case",
+                rating: 4.4,
+                stock: 45,
+                material: "TPU + silicone"
+            },
+            {
+                id: 10,
+                name: "Dreamy Journal & Pen Set",
+                price: 14.99,
+                category: "Stationery",
+                description: "A5 lined journal with gold foil Cinnamoroll cover + matching fluffy pen. 160 pages of cloud-themed paper.",
+                image: "https://placehold.co/600x600/faf5ff/a855f7?text=Journal",
+                rating: 4.8,
+                stock: 112,
+                material: "Premium paper + metal pen"
+            }
+        ]
+        
+        let cart = []
+        let currentProductId = null
+        let currentCategoryFilter = 'all'
+        
+        // Load cart from localStorage
+        function loadCart() {
+            const saved = localStorage.getItem('cinnamorollCart')
+            if (saved) {
+                cart = JSON.parse(saved)
+            }
+            updateCartCount()
+        }
+        
+        function saveCart() {
+            localStorage.setItem('cinnamorollCart', JSON.stringify(cart))
+            updateCartCount()
+        }
+        
+        function updateCartCount() {
+            const countEl = document.getElementById('cart-count')
+            const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0)
+            countEl.textContent = totalItems
+            countEl.style.display = totalItems > 0 ? 'flex' : 'none'
+        }
+        
+        // Render all products
+        function renderProducts() {
+            const grid = document.getElementById('product-grid')
+            grid.innerHTML = ''
+            
+            const searchTerm = document.getElementById('search-input').value.toLowerCase().trim()
+            const category = document.getElementById('category-filter').value
+            const sortMode = document.getElementById('sort-select').value
+            
+            let filtered = [...products]
+            
+            // Search filter
+            if (searchTerm) {
+                filtered = filtered.filter(p => 
+                    p.name.toLowerCase().includes(searchTerm) || 
+                    p.description.toLowerCase().includes(searchTerm) ||
+                    p.category.toLowerCase().includes(searchTerm)
+                )
+            }
+            
+            // Category filter
+            if (category !== 'all') {
+                filtered = filtered.filter(p => p.category === category)
+            }
+            
+            // Sorting
+            if (sortMode === 'price-low') {
+                filtered.sort((a, b) => a.price - b.price)
+            } else if (sortMode === 'price-high') {
+                filtered.sort((a, b) => b.price - a.price)
+            } else if (sortMode === 'rating') {
+                filtered.sort((a, b) => b.rating - a.rating)
+            } else {
+                // Popular (default) - sort by stock as proxy + rating
+                filtered.sort((a, b) => (b.stock * b.rating) - (a.stock * a.rating))
+            }
+            
+            if (filtered.length === 0) {
+                grid.innerHTML = `
+                    <div class="col-span-full py-12 text-center">
+                        <i class="fas fa-search text-4xl text-pink-200 mb-4"></i>
+                        <p class="text-gray-500">No products found. Try a different search.</p>
+                    </div>
+                `
+                return
+            }
+            
+            filtered.forEach(product => {
+                const cardHTML = `
+                    <div class="product-card bg-white border border-pink-100 rounded-3xl overflow-hidden group shadow-sm hover:shadow-md">
+                        <div class="relative overflow-hidden bg-pink-50">
+                            <img src="${product.image}" 
+                                 class="product-img w-full h-52 object-cover" 
+                                 alt="${product.name}">
+                            
+                            <div class="absolute top-3 left-3">
+                                <span class="px-3 py-1 text-[10px] font-bold tracking-wider bg-white/95 text-pink-600 rounded-2xl shadow-sm">${product.category}</span>
+                            </div>
+                            
+                            ${product.stock < 60 ? `
+                                <div class="absolute top-3 right-3 bg-amber-400 text-white text-[10px] font-bold px-2.5 py-0.5 rounded-xl">LOW STOCK</div>
+                            ` : ''}
+                        </div>
+                        
+                        <div class="p-5">
+                            <div class="flex justify-between items-start gap-2">
+                                <h4 class="font-semibold leading-tight pr-1">${product.name}</h4>
+                                <div class="text-right flex-shrink-0">
+                                    <span class="font-extrabold text-xl text-pink-600">$${product.price}</span>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-center mt-1.5 mb-3">
+                                <div class="flex text-amber-400 text-sm">
+                                    ${createStarRating(product.rating)}
+                                </div>
+                                <span class="ml-1.5 text-xs text-gray-500 font-medium">${product.rating}</span>
+                            </div>
+                            
+                            <p class="text-xs text-gray-500 line-clamp-2 mb-4">${product.description}</p>
+                            
+                            <div class="flex gap-2">
+                                <button onclick="addToCart(${product.id}, event)" 
+                                        class="flex-1 cute-btn bg-pink-500 hover:bg-pink-600 active:bg-pink-700 transition text-white text-sm font-semibold py-2.5 rounded-2xl flex items-center justify-center gap-x-2">
+                                    <i class="fas fa-plus text-xs"></i>
+                                    <span>ADD</span>
+                                </button>
+                                
+                                <button onclick="showQuickView(${product.id}, event)" 
+                                        class="px-4 border border-pink-200 hover:bg-pink-50 text-pink-500 rounded-2xl text-sm transition flex items-center">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `
+                grid.innerHTML += cardHTML
+            })
+        }
+        
+        function createStarRating(rating) {
+            let html = ''
+            const fullStars = Math.floor(rating)
+            const hasHalf = (rating % 1) >= 0.5
+            
+            for (let i = 0; i < fullStars; i++) {
+                html += `<i class="fas fa-star star"></i>`
+            }
+            if (hasHalf) {
+                html += `<i class="fas fa-star-half-alt star"></i>`
+            }
+            const empty = 5 - fullStars - (hasHalf ? 1 : 0)
+            for (let i = 0; i < empty; i++) {
+                html += `<i class="far fa-star text-gray-300"></i>`
+            }
+            return html
+        }
+        
+        // Quick View Modal
+        function showQuickView(productId, e) {
+            if (e) e.stopImmediatePropagation()
+            
+            const product = products.find(p => p.id === productId)
+            if (!product) return
+            
+            currentProductId = productId
+            
+            document.getElementById('modal-image').src = product.image
+            document.getElementById('modal-name').textContent = product.name
+            document.getElementById('modal-price').textContent = '$' + product.price
+            document.getElementById('modal-category').textContent = product.category.toUpperCase()
+            document.getElementById('modal-description').textContent = product.description
+            document.getElementById('modal-material').textContent = product.material
+            document.getElementById('modal-stock').innerHTML = `${product.stock} <span class="text-xs text-gray-500">left</span>`
+            document.getElementById('modal-rating').textContent = `${product.rating} / 5`
+            
+            // Stars
+            const starsContainer = document.getElementById('modal-stars')
+            starsContainer.innerHTML = createStarRating(product.rating)
+            
+            document.getElementById('product-modal').classList.remove('hidden')
+            document.getElementById('product-modal').classList.add('flex')
+        }
+        
+        function hideProductModal() {
+            const modal = document.getElementById('product-modal')
+            modal.classList.remove('flex')
+            modal.classList.add('hidden')
+        }
+        
+        function addCurrentProductToCart() {
+            if (currentProductId) {
+                addToCart(currentProductId)
+                hideProductModal()
+            }
+        }
+        
+        // Add to cart
+        function addToCart(productId, e) {
+            if (e) e.stopImmediatePropagation()
+            
+            const product = products.find(p => p.id === productId)
+            if (!product) return
+            
+            const existing = cart.find(item => item.id === productId)
+            
+            if (existing) {
+                existing.quantity++
+            } else {
+                cart.push({
+                    ...product,
+                    quantity: 1
+                })
+            }
+            
+            saveCart()
+            
+            // Toast notification
+            showToast(`Added ${product.name} to cart!`)
+            
+            // Optional: auto open cart on first add
+            // if (cart.length === 1) setTimeout(showCart, 600)
+        }
+        
+        function showToast(message) {
+            const toast = document.createElement('div')
+            toast.className = `fixed bottom-6 left-1/2 -translate-x-1/2 bg-gray-900 text-white px-6 py-3 rounded-3xl shadow-xl flex items-center gap-x-3 text-sm z-[200]`
+            toast.innerHTML = `
+                <i class="fas fa-check-circle text-emerald-400"></i>
+                <span>${message}</span>
+            `
+            document.body.appendChild(toast)
+            
+            setTimeout(() => {
+                toast.style.transition = 'all 0.2s ease'
+                toast.style.opacity = '0'
+                setTimeout(() => toast.remove(), 200)
+            }, 2200)
+        }
+        
+        // Cart functions
+        function showCart() {
+            renderCart()
+            const panel = document.getElementById('cart-panel')
+            panel.classList.remove('hidden')
+            panel.classList.add('flex')
+        }
+        
+        function hideCart() {
+            const panel = document.getElementById('cart-panel')
+            panel.classList.remove('flex')
+            panel.classList.add('hidden')
+        }
+        
+        function renderCart() {
+            const container = document.getElementById('cart-items')
+            const totalEl = document.getElementById('cart-total')
+            const countEl = document.getElementById('cart-items-count')
+            
+            container.innerHTML = ''
+            
+            if (cart.length === 0) {
+                container.innerHTML = `
+                    <div class="flex flex-col items-center justify-center h-full py-10 text-center">
+                        <i class="fas fa-shopping-bag text-5xl text-pink-100 mb-4"></i>
+                        <p class="font-medium text-gray-500">Your cart is empty</p>
+                        <p class="text-xs text-gray-400 mt-1">Add some cute items!</p>
+                        <button onclick="hideCart()" class="mt-6 text-sm px-5 py-2 border border-pink-200 rounded-2xl hover:bg-pink-50">Continue Shopping</button>
+                    </div>
+                `
+                totalEl.textContent = '$0.00'
+                countEl.textContent = '(0)'
+                return
+            }
+            
+            let subtotal = 0
+            
+            cart.forEach((item, index) => {
+                const itemTotal = item.price * item.quantity
+                subtotal += itemTotal
+                
+                const itemHTML = `
+                    <div class="flex gap-4 border-b border-pink-100 pb-5 last:border-none last:pb-0">
+                        <div class="w-16 h-16 flex-shrink-0 rounded-2xl overflow-hidden border border-pink-100">
+                            <img src="${item.image}" class="w-full h-full object-cover" alt="">
+                        </div>
+                        
+                        <div class="flex-1 min-w-0">
+                            <div class="flex justify-between">
+                                <div>
+                                    <div class="font-semibold leading-tight pr-2">${item.name}</div>
+                                    <div class="text-xs text-pink-500 mt-0.5">$${item.price} × ${item.quantity}</div>
+                                </div>
+                                
+                                <div class="text-right">
+                                    <div class="font-bold">$${itemTotal.toFixed(2)}</div>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-center justify-between mt-3">
+                                <!-- Quantity -->
+                                <div class="flex items-center border border-pink-200 rounded-2xl text-sm">
+                                    <button onclick="changeCartQuantity(${index}, -1)" class="px-3 py-1 hover:bg-pink-50 active:bg-pink-100 rounded-l-2xl transition">-</button>
+                                    <span class="px-3 font-medium tabular-nums">${item.quantity}</span>
+                                    <button onclick="changeCartQuantity(${index}, 1)" class="px-3 py-1 hover:bg-pink-50 active:bg-pink-100 rounded-r-2xl transition">+</button>
+                                </div>
+                                
+                                <button onclick="removeFromCart(${index})" class="text-pink-300 hover:text-red-400 transition p-1">
+                                    <i class="fas fa-trash-alt text-sm"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `
+                container.innerHTML += itemHTML
+            })
+            
+            totalEl.textContent = '$' + subtotal.toFixed(2)
+            countEl.textContent = `(${cart.length})`
+        }
+        
+        function changeCartQuantity(index, delta) {
+            cart[index].quantity += delta
+            
+            if (cart[index].quantity < 1) {
+                cart.splice(index, 1)
+            }
+            
+            saveCart()
+            renderCart()
+        }
+        
+        function removeFromCart(index) {
+            cart.splice(index, 1)
+            saveCart()
+            renderCart()
+        }
+        
+        function proceedToCheckout() {
+            hideCart()
+            
+            // Update checkout total
+            const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0)
+            document.getElementById('checkout-total').textContent = '$' + subtotal.toFixed(2)
+            
+            const modal = document.getElementById('checkout-modal')
+            modal.classList.remove('hidden')
+            modal.classList.add('flex')
+        }
+        
+        function hideCheckoutModal() {
+            const modal = document.getElementById('checkout-modal')
+            modal.classList.remove('flex')
+            modal.classList.add('hidden')
+        }
+        
+        function completeOrder(e) {
+            e.preventDefault()
+            
+            hideCheckoutModal()
+            
+            // Show success
+            setTimeout(() => {
+                const success = document.getElementById('success-modal')
+                success.classList.remove('hidden')
+                success.classList.add('flex')
+                
+                // Clear cart
+                cart = []
+                saveCart()
+                updateCartCount()
+            }, 350)
+        }
+        
+        function hideSuccessModal() {
+            const modal = document.getElementById('success-modal')
+            modal.classList.remove('flex')
+            modal.classList.add('hidden')
+            
+            // Refresh products in case stock changed (demo)
+            renderProducts()
+        }
+        
+        // Quick category filter from highlight cards
+        function filterByCategoryQuick(category) {
+            document.getElementById('category-filter').value = category
+            document.getElementById('shop').scrollIntoView({ behavior: 'smooth', block: 'start' })
+            
+            setTimeout(() => {
+                renderProducts()
+            }, 600)
+        }
+        
+        function filterFromNavSearch() {
+            const navSearch = document.getElementById('nav-search').value
+            document.getElementById('search-input').value = navSearch
+            document.getElementById('shop').scrollIntoView({ behavior: 'smooth' })
+            
+            setTimeout(() => {
+                renderProducts()
+                document.getElementById('nav-search').value = ''
+            }, 700)
+        }
+        
+        function toggleMobileMenu() {
+            const nav = document.querySelector('nav')
+            alert('Mobile menu would open here in a full version. Try on desktop for best experience!')
+        }
+        
+        function showAbout() {
+            document.getElementById('about').scrollIntoView({ behavior: 'smooth' })
+        }
+        
+        // Initialize everything
+        function initializeShop() {
+            initializeTailwind()
+            loadCart()
+            
+            // Initial render
+            renderProducts()
+            
+            // Make category filter also trigger on change already handled in HTML
+            
+            // Bonus: Allow pressing "/" to focus search
+            document.addEventListener('keydown', function(e) {
+                if (e.key === '/' && document.activeElement.tagName === 'BODY') {
+                    e.preventDefault()
+                    document.getElementById('search-input').focus()
+                }
+            })
+            
+            // Demo: Add one item to cart automatically after 8 seconds (optional, commented)
+            // setTimeout(() => {
+            //     if (cart.length === 0) {
+            //         addToCart(1)
+            //     }
+            // }, 8000)
+            
+            // Welcome console message
+            console.log('%c[Cinnamoroll Shop] Demo website initialized successfully. Built with Grok!', 'color:#f472b6')
+        }
+        
+        // Boot the shop
+        window.onload = initializeShop
+    </script>
+</body>
+</html>
